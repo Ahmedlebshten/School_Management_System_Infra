@@ -32,7 +32,8 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 echo "🔹 Applying Terraform plan..."
-                sh 'terraform apply -auto-approve tfplan'
+              //  sh 'terraform apply -auto-approve tfplan'
+                sh 'terraform destroy -auto-approve tfplan'
                 echo "✅ Terraform infrastructure deployed successfully!"
             }
         }
