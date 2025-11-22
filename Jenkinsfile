@@ -30,48 +30,49 @@ pipeline {
                 sh 'terraform apply -auto-approve tfplan'
                 echo "✅ Infrastructure deployed successfully!"
             }
-        } 
-        
-stage('Install ArgoCD + IAM Mapping') {
-  steps {
-    sh '''
-      set -e
+        }
 
-      export AWS_REGION=us-east-1
-      export CLUSTER_NAME=hello-devops-production-cluster
+        stage('Install ArgoCD + IAM Mapping') {
+            steps {
+                sh '''
+                    set -e
 
-      echo "🔹 Updating kubeconfig..."
-      aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
+                    export AWS_REGION=us-east-1
+                    export CLUSTER_NAME=hello-devops-production-cluster
 
-      echo "🔹 Mapping Jenkins EC2 IAM Role to EKS RBAC..."
-      eksctl create iamidentitymapping \
-        --region $AWS_REGION \
-        --cluster $CLUSTER_NAME \
-        --arn arn:aws:iam::420606830171:role/Jenkins-EC2-Role \
-        --username jenkins-ec2-role \
-        --group system:masters || true
+                    echo "🔹 Updating kubeconfig..."
+                    aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
 
-      echo "🔹 Installing ArgoCD..."
-      kubectl create namespace argocd || true
-      kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+                    echo "🔹 Mapping Jenkins EC2 IAM Role to EKS RBAC..."
+                    eksctl create iamidentitymapping \
+                      --region $AWS_REGION \
+                      --cluster $CLUSTER_NAME \
+                      --arn arn:aws:iam::420606830171:role/Jenkins-EC2-Role \
+                      --username jenkins-ec2-role \
+                      --group system:masters || true
 
-      echo "⏳ Waiting for ArgoCD to become ready..."
-      kubectl -n argocd wait --for=condition=Available deployment/argocd-server --timeout=300s || true
+                    echo "🔹 Installing ArgoCD..."
+                    kubectl create namespace argocd || true
+                    kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
-      echo "🎉 ArgoCD Installed Successfully!"
-    '''
-  }
-}
+                    echo "⏳ Waiting for ArgoCD to become ready..."
+                    kubectl -n argocd wait --for=condition=Available deployment/argocd-server --timeout=300s || true
+
+                    echo "🎉 ArgoCD Installed Successfully!"
+                '''
+            }
+        }
 
         /*
         stage('Terraform Destroy') {
             steps {
-                echo "🗑️ Destroying Terraform infrastructure..."
+                echo "🗑 Destroying Terraform infrastructure..."
                 sh 'terraform destroy -auto-approve'
                 echo "🔥 Infrastructure destroyed successfully!"
             }
         }
         */
+
     }
 
     post {
@@ -80,6 +81,6 @@ stage('Install ArgoCD + IAM Mapping') {
         }
         failure {
             echo "❌ Pipeline failed!"
-        }
-    }
+        }
+    }
 }
