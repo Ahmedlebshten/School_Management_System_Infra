@@ -24,43 +24,12 @@ pipeline {
             }
         }
 
-        /*
+        
         stage('Terraform Apply') {
             steps {
                 echo "🔹 Applying Terraform..."
                 sh 'terraform apply -auto-approve tfplan'
                 echo "✅ Infrastructure deployed successfully!"
-            }
-        }
-
-        stage('Install ArgoCD + IAM Mapping') {
-            steps {
-                sh '''
-                    set -e
-
-                    export AWS_REGION=us-east-1
-                    export CLUSTER_NAME=hello-devops-production-cluster
-
-                    echo "🔹 Updating kubeconfig..."
-                    aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
-
-                    echo "🔹 Mapping Jenkins EC2 IAM Role to EKS RBAC..."
-                    eksctl create iamidentitymapping \
-                      --region $AWS_REGION \
-                      --cluster $CLUSTER_NAME \
-                      --arn arn:aws:iam::420606830171:role/Jenkins-EC2-Role \
-                      --username jenkins-ec2-role \
-                      --group system:masters || true
-
-                    echo "🔹 Installing ArgoCD..."
-                    kubectl create namespace argocd || true
-                    kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-
-                    echo "⏳ Waiting for ArgoCD to become ready..."
-                    kubectl -n argocd wait --for=condition=Available deployment/argocd-server --timeout=300s || true
-
-                    echo "🎉 ArgoCD Installed Successfully!"
-                '''
             }
         }
 
@@ -103,7 +72,7 @@ EOF
             }
         }
         
-*/
+/*
         stage('Terraform Destroy') {
             steps {
                 echo "🗑️ Destroying Terraform infrastructure..."
@@ -111,7 +80,7 @@ EOF
                 echo "🔥 Infrastructure destroyed successfully!"
             }
         }
-        
+        */
     }
 
     post {
