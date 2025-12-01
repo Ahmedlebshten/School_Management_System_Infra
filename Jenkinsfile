@@ -44,11 +44,20 @@ pipeline {
     }
 
     post {
-        success {
-            echo "🎉 Pipeline completed successfully!"
-        }
-        failure {
-            echo "❌ Pipeline failed!"
-        }
+    success {
+        echo "🎉 Infra pipeline succeeded — triggering downstream pipelines..."
+
+        // Trigger CD pipeline that installs ArgoCD on the cluster
+        build job: 'CD-Install-ArgoCD', wait: false, propagate: false
+
+        // Trigger CD pipeline that creates the ArgoCD Application
+        build job: 'CD-Create-ArgoCD-Application', wait: false, propagate: false
+
+        echo "🔔 Downstream CD pipelines triggered successfully!"
     }
+
+    failure {
+        echo "❌ Infra pipeline failed — skipping downstream pipelines."
+   }
+}
 }
