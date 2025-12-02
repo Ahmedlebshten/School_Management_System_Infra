@@ -24,7 +24,7 @@ pipeline {
             }
         }
 
-        
+        /*
         stage('Terraform Apply') {
             steps {
                 echo "🔹 Applying Terraform..."
@@ -32,8 +32,8 @@ pipeline {
                 echo "✅ Infrastructure deployed successfully!"
             }
         }
-        
-/*
+        */
+
         stage('Terraform Destroy') {
             steps {
                 echo "🗑️ Destroying Terraform infrastructure..."
@@ -41,7 +41,7 @@ pipeline {
                 echo "🔥 Infrastructure destroyed successfully!"
             }
         }
-        */
+        
     }
 
     post {
