@@ -1,0 +1,138 @@
+pipeline {
+    agent any
+
+    stages {
+
+        /* ============================
+         🟩 1) Trivy Image Scan
+        ============================= */
+        stage('Trivy Image Scan') {
+            steps {
+                sh '''
+                  echo "🔍 Scanning Docker Image using Trivy..."
+
+                  docker run --rm aquasec/trivy:latest image ahmedlebshten/url-shortener:latest
+
+                  echo "✅ Trivy Image Scan Completed!"
+                '''
+            }
+        }
+
+        /* ============================
+         🟦 2) Gitleaks Multi-Repo Scan
+        ============================= */
+        stage('Gitleaks Scan') {
+            steps {
+                sh '''
+                  echo "🔍 Cloning and Scanning Repos with Gitleaks..."
+
+                  # INFRA
+                  git clone https://github.com/Ahmedlebshten/Jenkins-Pipeline-Build-Infra.git infra
+                  docker run --rm -v $PWD/infra:/repo zricethezav/gitleaks:latest detect --source=/repo || true
+
+                  # CI
+                  git clone https://github.com/Ahmedlebshten/Jenkins-CI-Pipeline.git ci
+                  docker run --rm -v $PWD/ci:/repo zricethezav/gitleaks:latest detect --source=/repo || true
+
+                  # CD
+                  git clone https://github.com/Ahmedlebshten/ArgoCD-Pipeline.git cd
+                  docker run --rm -v $PWD/cd:/repo zricethezav/gitleaks:latest detect --source=/repo || true
+
+                  echo "✅ Gitleaks Scan Finished!"
+                '''
+            }
+        }
+
+        /* ============================
+         🟧 3) SonarQube Multi-Repo Scan
+        ============================= */
+        stage('SonarQube Scan') {
+            environment {
+                SONAR_HOST_URL = "http://sonarqube.security.svc.cluster.local:9100"
+                SONAR_TOKEN = credentials('sonar-token')
+            }
+            steps {
+                sh '''
+                  echo "🔍 Running SonarQube Scans..."
+
+                  # INFRA
+                  git clone https://github.com/Ahmedlebshten/Jenkins-Pipeline-Build-Infra.git infra
+                  cd infra
+                  sonar-scanner \
+                    -Dsonar.projectKey=infra \
+                    -Dsonar.sources=. \
+                    -Dsonar.host.url=$SONAR_HOST_URL \
+                    -Dsonar.login=$SONAR_TOKEN || true
+                  cd ..
+
+                  # CI
+                  git clone https://github.com/Ahmedlebshten/Jenkins-CI-Pipeline.git ci
+                  cd ci
+                  sonar-scanner \
+                    -Dsonar.projectKey=ci \
+                    -Dsonar.sources=. \
+                    -Dsonar.host.url=$SONAR_HOST_URL \
+                    -Dsonar.login=$SONAR_TOKEN || true
+                  cd ..
+
+                  # CD
+                  git clone https://github.com/Ahmedlebshten/ArgoCD-Pipeline.git cd
+                  cd cd
+                  sonar-scanner \
+                    -Dsonar.projectKey=cd \
+                    -Dsonar.sources=. \
+                    -Dsonar.host.url=$SONAR_HOST_URL \
+                    -Dsonar.login=$SONAR_TOKEN || true
+                  cd ..
+
+                  echo "✅ SonarQube Scan Finished!"
+                '''
+            }
+        }
+
+        /* ============================
+         🟥 4) Create ArgoCD Application
+        ============================= */
+        stage('Create ArgoCD Application') {
+            steps {
+                sh '''
+                  set -e
+
+                  export AWS_REGION=us-east-1
+                  export CLUSTER_NAME=hello-devops-production-cluster
+
+                  echo "🔹 Updating kubeconfig..."
+                  aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
+
+                  echo "🔹 Applying Security ArgoCD Application..."
+
+                  kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: security-tools
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Ahmedlebshten/Jenkins-Pipeline-Build-Infra.git
+    targetRevision: HEAD
+    path: security-tools
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+EOF
+
+                  echo "🎉 Security Tools ArgoCD Application Created Successfully!"
+                '''
+            }
+        }
+
+    }
+}

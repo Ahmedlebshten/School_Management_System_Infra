@@ -61,6 +61,9 @@ pipeline {
         // Trigger monitoring pipeline  
         build job: 'CD-Create-Monitoring-Application', wait: false, propagate: false
 
+        // Trigger security-tools pipeline  
+        build job: 'Security-Tools-Create-Application', wait: false, propagate: false
+
         echo "✅ Downstream CD pipelines triggered successfully!"
     }
 
