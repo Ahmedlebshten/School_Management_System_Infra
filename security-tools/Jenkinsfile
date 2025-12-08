@@ -26,6 +26,8 @@ pipeline {
                 sh '''
                   echo "🔍 Cloning and Scanning Repos with Gitleaks..."
 
+                  rm -rf infra ci cd
+
                   # INFRA
                   git clone https://github.com/Ahmedlebshten/Jenkins-Pipeline-Build-Infra.git infra
                   docker run --rm -v $PWD/infra:/repo zricethezav/gitleaks:latest detect --source=/repo || true
@@ -54,6 +56,8 @@ pipeline {
             steps {
                 sh '''
                   echo "🔍 Running SonarQube Scans..."
+
+                  rm -rf infra ci cd
 
                   # INFRA
                   git clone https://github.com/Ahmedlebshten/Jenkins-Pipeline-Build-Infra.git infra
