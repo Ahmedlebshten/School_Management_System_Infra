@@ -12,12 +12,12 @@ pipeline {
                 echo "🔍 Scanning Docker Image using Trivy..."
 
                 LATEST_TAG=$(curl -s https://registry.hub.docker.com/v2/repositories/ahmedlebshten/url-shortener/tags/ \
-                | jq -r '.results[0].name')
+                   | grep '"name"' \
+                   | head -n 1 \
+                   | sed 's/.*"name": "\(.*\)".*/\1/')
 
-                echo "➡️ Using tag: $LATEST_TAG"
-
+                echo "Using tag: $LATEST_TAG"
                 docker run --rm aquasec/trivy:latest image ahmedlebshten/url-shortener:$LATEST_TAG
-
                 echo "✅ Trivy Image Scan Completed!"
                 '''
         }
