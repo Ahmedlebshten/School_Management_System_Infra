@@ -48,7 +48,7 @@ pipeline {
         ============================= */
         stage('SonarQube Scan') {
             environment {
-                SONAR_HOST_URL = "http://sonarqube.security.svc.cluster.local:9100"
+                SONAR_HOST_URL = "http://54.87.2.77:9100"
                 SONAR_TOKEN = credentials('sonar-token')
             }
             steps {
