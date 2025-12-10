@@ -24,7 +24,7 @@ pipeline {
             }
         }
 
-        /
+        
         stage('Terraform Apply') {
             steps {
                 echo "🔹 Applying Terraform..."
