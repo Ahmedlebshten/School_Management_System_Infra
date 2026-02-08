@@ -67,7 +67,11 @@ variable "cluster_version" {
 }
 
 variable "additional_iam_users" {
-  type    = list(string)
+  type = list(object({
+    userarn  = string
+    username = string
+    groups   = list(string)
+  }))
   default = []
 }
 
