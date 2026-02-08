@@ -66,6 +66,11 @@ variable "cluster_version" {
   type        = string
 }
 
+variable "additional_iam_users" {
+  type    = list(string)
+  default = []
+}
+
 variable "node_group_desired_size" {
   description = "Desired number of worker nodes"
   type        = number
