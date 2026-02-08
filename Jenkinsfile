@@ -61,7 +61,7 @@ pipeline {
         '''
       }
     }
-
+/*
     stage('Create ArgoCD Root Application') {
       when {
         expression { params.ACTION == 'apply' }
@@ -72,6 +72,7 @@ pipeline {
         '''
       }
     }
+    */
   }
 
   post {
