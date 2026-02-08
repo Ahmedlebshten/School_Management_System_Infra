@@ -56,7 +56,7 @@ pipeline {
             --name $(terraform output -raw eks_cluster_name)
 
           kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
-          kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+          kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.8.4/manifests/install.yaml
           kubectl -n argocd wait --for=condition=Available deployment/argocd-server --timeout=300s
         '''
       }
