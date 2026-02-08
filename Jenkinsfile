@@ -38,8 +38,6 @@ pipeline {
     }
   }
 
-    agent any
-
     options {
         // Prevent concurrent builds to avoid state lock contention
         disableConcurrentBuilds()
