@@ -1,0 +1,227 @@
+/*
+================================================================================
+  INFRASTRUCTURE DESTROY PIPELINE
+================================================================================
+
+🚨 WARNING: THIS PIPELINE DESTROYS AWS INFRASTRUCTURE 🚨
+
+WHAT THIS DOES:
+  ✅ Tears down EKS cluster
+  ✅ Deletes VPC and all networking resources
+  ✅ Removes IAM roles and policies
+  ✅ Destroys Security Groups
+  ✅ Cleans up all associated AWS resources
+
+WHAT THIS DOES NOT DO:
+  ❌ Does NOT delete the Terraform state (for forensics/emergency recovery)
+  ❌ Does NOT delete the S3 backend bucket
+
+DANGER:
+  - All running applications in EKS will be PERMANENTLY DELETED
+  - All data stored in cluster will be LOST
+  - Network connectivity will be SEVERED
+  - This is IRREVERSIBLE without restoring from backups
+
+TRIGGER:
+  ❌ MANUAL ONLY - No automatic triggers
+  ❌ Requires explicit parameter confirmation
+
+HOW TO USE:
+  1. Go to Jenkins job for this pipeline
+  2. Click "Build with Parameters"
+  3. Set CONFIRM_DESTROY = "yes-destroy-infrastructure"
+  4. Click Build
+  5. Monitor logs carefully
+
+RECOVERY:
+  If you need to recreate infrastructure:
+  1. Run the main Infrastructure Pipeline
+  2. It will provision new resources
+  3. Note: Previous data is gone
+
+================================================================================
+*/
+
+pipeline {
+    agent any
+
+    options {
+        // Prevent concurrent builds
+        disableConcurrentBuilds()
+        // Keep build logs for auditing
+        buildDiscarder(logRotator(daysToKeepStr: '90', numToKeepStr: '100'))
+        // Timeout after 1 hour
+        timeout(time: 1, unit: 'HOURS')
+    }
+
+    parameters {
+        string(
+            name: 'CONFIRM_DESTROY',
+            defaultValue: '',
+            description: 'Type exactly "yes-destroy-infrastructure" to proceed with destruction. This is your final safety confirmation.'
+        )
+    }
+
+    stages {
+        /*
+        ========================================================================
+        STAGE 1: VALIDATE DESTRUCTION CONFIRMATION
+        ========================================================================
+        Ensures the user explicitly confirms infrastructure destruction.
+        This is a safety mechanism to prevent accidental destruction.
+        */
+        stage('Validate Destruction Confirmation') {
+            steps {
+                script {
+                    echo ""
+                    echo "🚨 🚨 🚨 INFRASTRUCTURE DESTRUCTION INITIATED 🚨 🚨 🚨"
+                    echo ""
+                    echo "⚠️  THIS WILL:"
+                    echo "    - Delete EKS cluster"
+                    echo "    - Destroy all running applications"
+                    echo "    - Remove VPC and networking"
+                    echo "    - Erase all cluster data"
+                    echo "    - Tear down all AWS resources"
+                    echo ""
+                    echo "⚠️  THIS CANNOT BE UNDONE"
+                    echo ""
+
+                    if (params.CONFIRM_DESTROY != 'yes-destroy-infrastructure') {
+                        error "❌ Destruction confirmation failed!\n\nYou must type: yes-destroy-infrastructure\n\nYou typed: ${params.CONFIRM_DESTROY}\n\nPipeline aborted for safety."
+                    }
+
+                    echo "✅ Destruction confirmation verified"
+                    echo "Proceeding with infrastructure teardown..."
+                }
+            }
+        }
+
+        /*
+        ========================================================================
+        STAGE 2: CHECKOUT CODE FROM REPOSITORY
+        ========================================================================
+        Pulls the infrastructure code to get the correct Terraform configuration.
+        */
+        stage('Checkout Code') {
+            steps {
+                echo "📥 Checking out infrastructure code from Git repository..."
+                git branch: 'master', url: 'https://github.com/Ahmedlebshten/School_Management_System_Infra'
+                echo "✅ Code checked out successfully"
+            }
+        }
+
+        /*
+        ========================================================================
+        STAGE 3: TERRAFORM INITIALIZATION
+        ========================================================================
+        Initializes Terraform to prepare for destruction.
+        */
+        stage('Terraform Init') {
+            steps {
+                echo "🔧 Initializing Terraform working directory..."
+                sh '''
+                    terraform init \
+                        -reconfigure \
+                        -no-color
+                '''
+                echo "✅ Terraform initialization complete"
+            }
+        }
+
+        /*
+        ========================================================================
+        STAGE 4: TERRAFORM DESTROY
+        ========================================================================
+        Destroys all AWS infrastructure managed by Terraform.
+
+        This stage:
+        1. Terminates EKS cluster (which deletes all Kubernetes resources)
+        2. Deletes VPC and subnets
+        3. Removes NAT Gateways and security groups
+        4. Cleans up IAM roles and policies
+        5. Removes all associated AWS resources
+
+        Approx time: 15-20 minutes
+        */
+        stage('Terraform Destroy') {
+            steps {
+                echo ""
+                echo "🗑️  Destroying Terraform-managed infrastructure..."
+                echo ""
+                echo "⏳ This process will take approximately 15-20 minutes"
+                echo "⏳ Monitor logs below for progress..."
+                echo ""
+
+                sh '''
+                    set -e
+
+                    echo "Starting infrastructure destruction..."
+                    echo ""
+
+                    terraform destroy \
+                        -no-color \
+                        -auto-approve
+
+                    echo ""
+                    echo "✅ Terraform destroy completed successfully"
+                '''
+            }
+        }
+
+    }
+
+    post {
+        success {
+            echo ""
+            echo "✅ ✅ ✅ INFRASTRUCTURE DESTRUCTION COMPLETED ✅ ✅ ✅"
+            echo ""
+            echo "===================================================================="
+            echo "INFRASTRUCTURE STATUS: DESTROYED"
+            echo "===================================================================="
+            echo ""
+            echo "All AWS resources have been deleted:"
+            echo "  ✅ EKS cluster terminated"
+            echo "  ✅ VPC and networks removed"
+            echo "  ✅ IAM roles deleted"
+            echo "  ✅ Security groups removed"
+            echo "  ✅ All associated resources cleaned up"
+            echo ""
+            echo "NOTES:"
+            echo "  - Terraform state file remains in S3 (for recovery if needed)"
+            echo "  - S3 backend bucket still exists (for re-initialization)"
+            echo "  - To rebuild infrastructure: Run the main Infrastructure Pipeline"
+            echo ""
+            echo "===================================================================="
+        }
+
+        failure {
+            echo ""
+            echo "❌ INFRASTRUCTURE DESTRUCTION FAILED"
+            echo ""
+            echo "⚠️  PARTIAL DESTRUCTION MAY HAVE OCCURRED"
+            echo ""
+            echo "Common causes:"
+            echo "  - AWS API rate limiting"
+            echo "  - Missing IAM permissions"
+            echo "  - Resources with deletion protection"
+            echo "  - ELB still attached to resources"
+            echo ""
+            echo "RECOVERY:"
+            echo "  1. Check error messages above"
+            echo "  2. Fix the issue (e.g., remove deletion protection)"
+            echo "  3. Retry this pipeline with same confirmation"
+            echo ""
+            echo "MANUAL INTERVENTION:"
+            echo "  If pipeline continues to fail, log into AWS Console and:"
+            echo "  1. Check CloudFormation stacks"
+            echo "  2. Check EC2 instances and ELBs"
+            echo "  3. Manually delete remaining resources"
+            echo "  4. Then retry Terraform destroy"
+        }
+
+        always {
+            echo ""
+            echo "Pipeline execution completed"
+        }
+    }
+}

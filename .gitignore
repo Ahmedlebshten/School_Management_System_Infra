@@ -1,4 +1,117 @@
-**/.terraform/*
-# .tfstate files
+# ============================================================================
+# TERRAFORM - Working directories and state files
+# ============================================================================
+.terraform/
+.terraform.lock.hcl
 *.tfstate
-*.tfstate.
+*.tfstate.*
+*.tfstate.backup
+*.tfvars.json
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+.terraform/modules/
+
+# ============================================================================
+# IDE & EDITOR FILES
+# ============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.env.local
+.env.*.local
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# ============================================================================
+# OS-SPECIFIC FILES
+# ============================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ============================================================================
+# LOGS & TEMPORARY FILES
+# ============================================================================
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+
+# ============================================================================
+# ENVIRONMENT & SECRETS (NEVER COMMIT)
+# ============================================================================
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+*.pem
+*.key
+*.crt
+kubeconfig*
+~/.kube/config
+
+# ============================================================================
+# BUILD & DEPENDENCY ARTIFACTS
+# ============================================================================
+node_modules/
+vendor/
+dist/
+build/
+*.class
+*.jar
+*.war
+*.ear
+target/
+
+# ============================================================================
+# JENKINS
+# ============================================================================
+jobs/
+builds/
+workspace/
+
+# ============================================================================
+# KUBERNETES
+# ============================================================================
+kubeconfig
+kube-config
+*.yaml.bak
+
+# ============================================================================
+# AWS CLI & CREDENTIALS
+# ============================================================================
+.aws/credentials
+.aws/config
+aws_credentials
+.aws-credentials
+
+# ============================================================================
+# GIT & VERSION CONTROL
+# ============================================================================
+.gitkeep
+MERGE_HEAD
+CHERRY_PICK_HEAD
+
+# ============================================================================
+# PLAN & LOCK FILES (Optional - uncomment if you want to ignore)
+# ============================================================================
+# tfplan
+# tfplan.*
+# .terraform.lock.hcl  # Uncomment if you want to manage lock files manually

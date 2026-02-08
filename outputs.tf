@@ -52,3 +52,18 @@ output "configure_kubectl" {
   description = "Command to configure kubectl"
   value       = "aws eks update-kubeconfig --region ${var.aws_region} --name ${module.eks.cluster_name}"
 }
+
+output "aws_region" {
+  description = "AWS region where infrastructure is deployed"
+  value       = var.aws_region
+}
+
+output "project_name" {
+  description = "Project name used for all resources"
+  value       = var.project_name
+}
+
+output "environment" {
+  description = "Environment name (dev, staging, production)"
+  value       = var.environment
+}
