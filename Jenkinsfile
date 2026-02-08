@@ -7,7 +7,7 @@
 pipeline {
   agent {
     docker {
-      image 'ghcr.io/antonbabenko/terraform-aws-cli:latest'
+      image 'hashicorp/terraform:1.6'
       args '-u root'
     }
   }
