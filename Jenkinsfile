@@ -31,6 +31,13 @@ NEXT STEPS FOR AUTOMATION:
 */
 
 pipeline {
+  agent {
+    docker {
+      image 'ghcr.io/antonbabenko/terraform-aws-cli:latest'
+      args '-u root'
+    }
+  }
+
     agent any
 
     options {
