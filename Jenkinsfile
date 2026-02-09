@@ -61,18 +61,18 @@ pipeline {
         '''
       }
     }
-/*
+
     stage('Create ArgoCD Root Application') {
       when {
         expression { params.ACTION == 'apply' }
       }
       steps {
         sh '''
-          kubectl apply -f argocd-apps/root-app.yaml
+          kubectl apply -f argocd/root-app.yaml
         '''
       }
     }
-    */
+    
   }
 
   post {
