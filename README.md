@@ -117,3 +117,13 @@ ____
 - Install ArgoCD
 - Create the Root Application
 - Trigger automatic deployment of all Kubernetes applications
+____
+
+## 📚 Documentation
+
+#### Detailed technical documentation is available in the `/docs` directory:
+
+- GitOps workflow
+- Jenkins pipeline breakdown
+- Infrastructure architecture
+- Verification checklist
