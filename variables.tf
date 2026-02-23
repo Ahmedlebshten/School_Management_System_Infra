@@ -1,5 +1,5 @@
 # ============================================================================
-# ROOT MODULE - variables.tf
+# ROOT MODULE - variables.tf -> Resources Declaration
 # ============================================================================
 
 variable "project_name" {
