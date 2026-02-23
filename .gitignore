@@ -2,11 +2,12 @@
 # TERRAFORM - Working directories and state files
 # ============================================================================
 .terraform/
-.terraform.lock.hcl
 *.tfstate
 *.tfstate.*
 *.tfstate.backup
 *.tfvars.json
+terraform.tfvars
+*.auto.tfvars
 crash.log
 crash.*.log
 override.tf
@@ -26,8 +27,6 @@ terraform.rc
 *.swo
 *~
 .DS_Store
-.env.local
-.env.*.local
 *.sublime-project
 *.sublime-workspace
 *.code-workspace
@@ -35,7 +34,6 @@ terraform.rc
 # ============================================================================
 # OS-SPECIFIC FILES
 # ============================================================================
-.DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
@@ -57,15 +55,14 @@ temp/
 # ENVIRONMENT & SECRETS (NEVER COMMIT)
 # ============================================================================
 .env
-.env.local
-.env.*.local
-.env.production
-.env.development
+.env.*
 *.pem
 *.key
 *.crt
 kubeconfig*
-~/.kube/config
+kube-config
+.aws/
+aws_credentials
 
 # ============================================================================
 # BUILD & DEPENDENCY ARTIFACTS
@@ -74,14 +71,10 @@ node_modules/
 vendor/
 dist/
 build/
-*.class
-*.jar
-*.war
-*.ear
 target/
 
 # ============================================================================
-# JENKINS
+# JENKINS (Local Jenkins data only)
 # ============================================================================
 jobs/
 builds/
@@ -90,28 +83,10 @@ workspace/
 # ============================================================================
 # KUBERNETES
 # ============================================================================
-kubeconfig
-kube-config
 *.yaml.bak
 
 # ============================================================================
-# AWS CLI & CREDENTIALS
+# PLAN FILES
 # ============================================================================
-.aws/credentials
-.aws/config
-aws_credentials
-.aws-credentials
-
-# ============================================================================
-# GIT & VERSION CONTROL
-# ============================================================================
-.gitkeep
-MERGE_HEAD
-CHERRY_PICK_HEAD
-
-# ============================================================================
-# PLAN & LOCK FILES (Optional - uncomment if you want to ignore)
-# ============================================================================
-# tfplan
-# tfplan.*
-# .terraform.lock.hcl  # Uncomment if you want to manage lock files manually
+tfplan
+tfplan.*
