@@ -23,7 +23,8 @@ ____
 
 ## What This Pipeline Does?
 
-The Jenkins pipeline automates the full infrastructure and GitOps bootstrap workflow:
+#### The Jenkins pipeline automates the full infrastructure and GitOps bootstrap workflow:
+
 1️⃣ Infrastructure Provisioning (Terraform)
 
 - Checkout code from GitHub
@@ -32,7 +33,7 @@ The Jenkins pipeline automates the full infrastructure and GitOps bootstrap work
 - Terraform Apply (provision AWS infrastructure including EKS cluster)
 
 2️⃣ ArgoCD Bootstrap (GitOps Initialization)
-After the EKS cluster is created, Jenkins:
+#### After the EKS cluster is created, Jenkins:
 
 - Updates kubeconfig to connect to the new cluster
 - Creates the argocd namespace
@@ -44,7 +45,7 @@ ____
 
 ## What Is the Root Application?
 
-The Root Application is an ArgoCD Application resource that points to the CD repository:
+#### The Root Application is an ArgoCD Application resource that points to the CD repository:
 
 ```
 spec:
