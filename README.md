@@ -4,10 +4,10 @@ This repository contains the Terraform code and Jenkins pipeline used to automat
 
 The pipeline pulls the code from GitHub, provisions AWS infrastructure using Terraform, installs ArgoCD on the EKS cluster, and creates the Root Application that manages all Kubernetes applications.
 
-⸻
+____
 
-Project Structure:
-.
+## Project Structure:
+```
 ├── modules/                # Reusable Terraform modules  
 ├── Jenkinsfile             # Jenkins pipeline to automate infra deployment
 ├── backend.tf              # Remote backend configuration (S3)
@@ -18,8 +18,10 @@ Project Structure:
 ├── terraform.tfvars        # Variables values (excluded from repo if sensitive)
 ├── .gitignore
 └── README.md
+```
+____
 
-🚀 What This Pipeline Does?
+## What This Pipeline Does?
 
 The Jenkins pipeline automates the full infrastructure and GitOps bootstrap workflow:
 1️⃣ Infrastructure Provisioning (Terraform)
@@ -38,9 +40,9 @@ After the EKS cluster is created, Jenkins:
 - Waits for ArgoCD server to be ready
 - Applies the Root Application
 
-⸻
+____
 
-🌱 What Is the Root Application?
+## What Is the Root Application?
 
 The Root Application is an ArgoCD Application resource that points to the CD repository:
 
@@ -52,20 +54,20 @@ spec:
     path: applications
 ```
 
-Once created:
+#### Once created:
 
 - ArgoCD monitors the CD repository
 - Reads everything inside the /applications folder
 - Automatically creates and syncs all child applications (monitoring stack, school app, etc.)
 
-⚠️ Important:
+## ⚠️ Important:
 Jenkins does NOT deploy the applications directly.
 It only installs ArgoCD and creates the Root App.
 ArgoCD then handles the rest using GitOps principles.
 
-⸻
+____
 
-🔁 GitOps Flow
+## 🔁 GitOps Flow
 
 - Jenkins provisions infrastructure
 - Jenkins installs ArgoCD
@@ -75,40 +77,40 @@ ArgoCD then handles the rest using GitOps principles.
 
 No manual kubectl apply is required.
 
-⸻
+____
 
-Technologies Used:
+## Technologies Used:
 	•	Jenkins
 	•	Terraform 
 	•	AWS (EKS, VPC, etc.)
 	•   ArgoCD
 	•	GitHub
 	
-⸻
+____
 
-🎯 Purpose of This Pipeline
+## 🎯 Purpose of This Pipeline
 
-This repository represents Pipeline 1 of a larger DevOps project:
+#### This repository represents Pipeline 1 of a larger DevOps project:
 
 - Infrastructure Pipeline (this repo)
 - CI Pipeline (Docker build + image push)
 - GitOps Deployment using ArgoCD
 
-This pipeline lays the foundation by:
+#### This pipeline lays the foundation by:
 
 - Creating AWS infrastructure
 - Bootstrapping Kubernetes
 - Enabling GitOps deployment automation
 
-⸻
+____
 
-▶️ How to Run
+## ▶️ How to Run
 
 - Add AWS credentials to Jenkins
 - Configure a Jenkins job pointing to this repository
 - Run the pipeline
 
-Jenkins will:
+#### Jenkins will:
 
 - Provision the full AWS infrastructure
 - Install ArgoCD
