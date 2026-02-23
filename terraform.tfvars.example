@@ -1,0 +1,99 @@
+# ============================================================================
+# ROOT MODULE - terraform.tfvars.example
+# Copy this file to terraform.tfvars and customize values for your environment
+# ============================================================================
+
+
+# ============================================================================
+# Project Configuration
+# ============================================================================
+project_name = "school-management-system"
+environment  = "production"
+aws_region   = "us-east-1"
+
+
+# ============================================================================
+# VPC Configuration
+# ============================================================================
+vpc_cidr = "10.0.0.0/16"
+
+availability_zones = [
+  "us-east-1a",
+  "us-east-1b",
+  "us-east-1c"
+]
+
+public_subnet_cidrs = [
+  "10.0.1.0/24",
+  "10.0.2.0/24",
+  "10.0.3.0/24"
+]
+
+private_subnet_cidrs = [
+  "10.0.11.0/24",
+  "10.0.12.0/24",
+  "10.0.13.0/24"
+]
+
+enable_nat_gateway   = true
+single_nat_gateway   = false
+enable_dns_hostnames = true
+enable_dns_support   = true
+
+
+# ============================================================================
+# EKS Configuration
+# ============================================================================
+cluster_version        = "1.30"
+
+node_group_desired_size = 2
+node_group_min_size     = 1
+node_group_max_size     = 4
+
+node_instance_types = ["t3.medium"]
+node_disk_size      = 20
+
+enable_cluster_encryption = true
+
+
+# ============================================================================
+# Control Plane Logging
+# ============================================================================
+cluster_log_types = [
+  "api",
+  "audit",
+  "authenticator",
+  "controllerManager",
+  "scheduler"
+]
+
+
+# ============================================================================
+# Security
+# IMPORTANT: Replace with your public IP (e.g., "1.2.3.4/32")
+# ============================================================================
+allowed_ssh_ips = ["YOUR_PUBLIC_IP/32"]
+
+
+# ============================================================================
+# IAM ACCESS CONFIGURATION
+# Replace ARN with your actual IAM role if needed
+# ============================================================================
+additional_iam_users = [
+  {
+    userarn  = "arn:aws:iam::<ACCOUNT_ID>:role/<YOUR_ROLE_NAME>"
+    username = "jenkins-role"
+    groups   = ["system:masters"]
+  }
+]
+
+
+# ============================================================================
+# Tags
+# ============================================================================
+tags = {
+  Project     = "school-management-system"
+  Environment = "production"
+  ManagedBy   = "Terraform"
+  Owner       = "DevOps-Team"
+}
