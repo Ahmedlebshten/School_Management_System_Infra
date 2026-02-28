@@ -33,7 +33,7 @@ ____
 - Terraform Apply (provision AWS infrastructure including EKS cluster)
 
 ###### 2️⃣ ArgoCD Bootstrap (GitOps Initialization)
-######## After the EKS cluster is created, Jenkins:
+###### After the EKS cluster is created, Jenkins:
 
 - Updates kubeconfig to connect to the new cluster
 - Creates the argocd namespace
