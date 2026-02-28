@@ -25,15 +25,15 @@ ____
 
 #### The Jenkins pipeline automates the full infrastructure and GitOps bootstrap workflow:
 
-1️⃣ Infrastructure Provisioning (Terraform)
+###### 1️⃣ Infrastructure Provisioning (Terraform)
 
 - Checkout code from GitHub
 - Terraform Init (backend + plugins)
 - Terraform Plan (preview changes)
 - Terraform Apply (provision AWS infrastructure including EKS cluster)
 
-2️⃣ ArgoCD Bootstrap (GitOps Initialization)
-#### After the EKS cluster is created, Jenkins:
+###### 2️⃣ ArgoCD Bootstrap (GitOps Initialization)
+######## After the EKS cluster is created, Jenkins:
 
 - Updates kubeconfig to connect to the new cluster
 - Creates the argocd namespace
@@ -61,7 +61,7 @@ spec:
 - Reads everything inside the /applications folder
 - Automatically creates and syncs all child applications (monitoring stack, school app, etc.)
 
-## ⚠️ Important:
+#### ⚠️ Important:
 Jenkins does NOT deploy the applications directly.
 It only installs ArgoCD and creates the Root App.
 ArgoCD then handles the rest using GitOps principles.
@@ -93,23 +93,26 @@ ____
 
 #### This repository represents Pipeline 1 of a larger DevOps project:
 
-- Infrastructure Pipeline (this repo)
-- CI Pipeline (Docker build + image push)
+- Infrastructure Pipeline (Jenkins + Terraform) <- (this repo)
+- CI Pipeline (GitHub Actions + Amazon ECR)
 - GitOps Deployment using ArgoCD
 
 #### This pipeline lays the foundation by:
 
-- Creating AWS infrastructure
-- Bootstrapping Kubernetes
-- Enabling GitOps deployment automation
+- Provisioning AWS infrastructure using Terraform
+- Creating VPC, IAM Roles, and EKS cluster
+- Configuring remote state (S3 backend)
+- Installing and bootstrapping ArgoCD
+- Enabling GitOps-based deployment automation
 
 ____
 
 ## ▶️ How to Run
 
-- Add AWS credentials to Jenkins
-- Configure a Jenkins job pointing to this repository
-- Run the pipeline
+- Ensure Jenkins is running on an EC2 instance with an attached IAM Role  
+  (no static AWS credentials required)
+- Configure a Jenkins pipeline job pointing to this repository
+- Trigger the pipeline manually to provision the infrastructure
 
 #### Jenkins will:
 
