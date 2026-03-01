@@ -25,14 +25,14 @@ ____
 
 ## The Jenkins pipeline automates the full infrastructure and GitOps bootstrap workflow:
 
-#### 1️⃣ Infrastructure Provisioning (Terraform)
+## 1️⃣ Infrastructure Provisioning (Terraform)
 
 - Checkout code from GitHub
 - Terraform Init (backend + plugins)
 - Terraform Plan (preview changes)
 - Terraform Apply (provision AWS infrastructure including EKS cluster)
 
-#### 2️⃣ ArgoCD Bootstrap (GitOps Initialization)
+## 2️⃣ ArgoCD Bootstrap (GitOps Initialization)
 After the EKS cluster is created, Jenkins:
 
 - Updates kubeconfig to connect to the new cluster
