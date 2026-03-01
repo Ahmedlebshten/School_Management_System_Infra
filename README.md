@@ -1,4 +1,4 @@
-# School Management System – Infrastructure Repository with Terraform
+# School Management System – Infrastructure (Terraform + EKS)
 
 This repository contains the Terraform code and Jenkins pipeline used to automate the provisioning of AWS infrastructure and bootstrap the GitOps workflow using ArgoCD.
 
