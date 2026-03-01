@@ -43,9 +43,9 @@ After the EKS cluster is created, Jenkins:
 
 ____
 
-## What Is the Root Application?
+### What Is the Root Application?
 
-## The Root Application is an ArgoCD Application resource that points to the CD repository:
+### The Root Application is an ArgoCD Application resource that points to the CD repository:
 
 ```
 spec:
@@ -55,7 +55,7 @@ spec:
     path: applications
 ```
 
-## Once created:
+### Once created:
 
 - ArgoCD monitors the CD repository
 - Reads everything inside the /applications folder
