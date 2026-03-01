@@ -81,11 +81,11 @@ No manual kubectl apply is required.
 ____
 
 ## Technologies Used:
-	•	Jenkins
-	•	Terraform 
-	•	AWS (EKS, VPC, etc.)
-	•   ArgoCD
-	•	GitHub
+- Jenkins
+- Terraform 
+- AWS (EKS, VPC, etc.)
+- ArgoCD
+- GitHub
 	
 ____
 
