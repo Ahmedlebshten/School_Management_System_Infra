@@ -1,4 +1,4 @@
-# Jenkins Pipeline – Automating AWS Infrastructure with Terraform
+# School Management System – Infrastructure Repository with Terraform
 
 This repository contains the Terraform code and Jenkins pipeline used to automate the provisioning of AWS infrastructure and bootstrap the GitOps workflow using ArgoCD.
 
